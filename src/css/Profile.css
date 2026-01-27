@@ -1,0 +1,476 @@
+.profile-page {
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding: 2rem 1rem;
+}
+
+.profile-container {
+  max-width: 900px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Profile Header */
+.profile-header {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.profile-avatar {
+  font-size: 3.5rem;
+  min-width: 70px;
+  text-align: center;
+  grid-column: 1;
+}
+
+.profile-info {
+  flex: 1;
+  grid-column: 2;
+}
+
+.profile-display-name {
+  font-size: 1.8rem;
+  margin: 0;
+  color: #333;
+  font-weight: 700;
+}
+
+.profile-email {
+  margin: 0.5rem 0 0 0;
+  color: #666;
+  font-size: 0.95rem;
+}
+
+.btn-logout-header {
+  padding: 0.6rem 1.5rem;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+  grid-column: 3;
+  height: fit-content;
+}
+
+.btn-logout-header:hover {
+  background-color: #c82333;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(220, 53, 69, 0.2);
+}
+
+.btn-logout-header:active {
+  transform: translateY(0);
+}
+
+/* Orders Section */
+.orders-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.5rem;
+  min-height: 0;
+}
+
+.orders-section h2 {
+  font-size: 1.2rem;
+  margin: 0 0 0.75rem 0;
+  color: #333;
+  font-weight: 600;
+}
+
+.orders-list {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.orders-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.orders-list::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.orders-list::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 3px;
+}
+
+.orders-list::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.order-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  padding: 0.75rem;
+  background: white;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+  border-left: 3px solid #007bff;
+}
+
+.order-card:hover {
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.1);
+  border-color: #007bff;
+}
+
+.order-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  gap: 0.5rem;
+}
+
+.order-id {
+  font-weight: 700;
+  font-size: 0.85rem;
+  color: #007bff;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.order-id::before {
+  content: '📦';
+  font-size: 0.9rem;
+}
+
+.order-status {
+  font-size: 0.7rem;
+  padding: 0.3rem 0.65rem;
+  border-radius: 20px;
+  font-weight: 700;
+  text-transform: capitalize;
+  white-space: nowrap;
+  letter-spacing: 0.2px;
+}
+
+.status-pending {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+.status-preparing {
+  background-color: #cfe2ff;
+  color: #084298;
+}
+
+.status-completed {
+  background-color: #d1e7dd;
+  color: #0f5132;
+}
+
+.status-cancelled {
+  background-color: #f8d7da;
+  color: #842029;
+}
+
+.order-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.order-date,
+.order-items,
+.order-total,
+.order-payment {
+  margin: 0;
+  color: #555;
+  line-height: 1.3;
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.order-date::before {
+  content: '📅';
+  font-size: 0.75rem;
+}
+
+.order-items::before {
+  content: '🛍️';
+  font-size: 0.75rem;
+}
+
+.order-total {
+  font-weight: 700;
+  color: #28a745;
+  grid-column: 1 / 2;
+  font-size: 0.9rem;
+}
+
+.order-total::before {
+  content: '💰';
+  font-size: 0.75rem;
+}
+
+.order-payment {
+  grid-column: 2 / 3;
+  text-align: left;
+  color: #666;
+  font-size: 0.75rem;
+}
+
+.order-payment::before {
+  content: '💳';
+  font-size: 0.75rem;
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 3rem 2rem;
+  color: #999;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Loading State */
+.loading {
+  text-align: center;
+  padding: 2rem;
+  color: #666;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Error Message */
+.error-message {
+  background-color: #f8d7da;
+  color: #842029;
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+  margin-bottom: 1rem;
+  border: 1px solid #f5c6cb;
+  font-size: 0.9rem;
+}
+
+/* Admin Message Section */
+.admin-message {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.5rem;
+  padding: 3rem 2rem;
+  background: linear-gradient(135deg, #f0f4ff 0%, #f9f9ff 100%);
+  border-radius: 8px;
+  border: 2px solid #e0e7ff;
+  text-align: center;
+}
+
+.admin-icon {
+  font-size: 3.5rem;
+}
+
+.admin-message h2 {
+  font-size: 1.5rem;
+  color: #333;
+  margin: 0;
+  font-weight: 700;
+}
+
+.admin-message p {
+  font-size: 1rem;
+  color: #666;
+  margin: 0;
+  max-width: 400px;
+}
+
+.admin-message .btn {
+  margin-top: 0.5rem;
+}
+
+/* Profile Actions - Removed (logout button now in header) */
+
+/* Tablet Responsiveness */
+@media (max-width: 768px) {
+  .profile-container {
+    padding: 1.5rem 1rem;
+  }
+
+  .profile-header {
+    grid-template-columns: auto 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    align-items: flex-start;
+  }
+
+  .profile-avatar {
+    font-size: 2.8rem;
+    min-width: 65px;
+    grid-column: 1;
+    grid-row: 1 / 3;
+  }
+
+  .profile-info {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .btn-logout-header {
+    padding: 0.55rem 1.2rem;
+    font-size: 0.85rem;
+    align-self: center;
+    width: fit-content;
+  }
+
+  .profile-display-name {
+    font-size: 1.5rem;
+  }
+
+  .profile-email {
+    font-size: 0.9rem;
+  }
+
+  .orders-section h2 {
+    font-size: 1rem;
+  }
+
+  .order-card {
+    padding: 0.7rem;
+  }
+
+  .order-header {
+    margin-bottom: 0.4rem;
+  }
+
+  .order-id {
+    font-size: 0.8rem;
+  }
+
+  .order-status {
+    font-size: 0.65rem;
+    padding: 0.25rem 0.55rem;
+  }
+
+  .order-details {
+    gap: 0.4rem;
+    font-size: 0.75rem;
+  }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 480px) {
+  .profile-container {
+    padding: 1rem;
+    border-radius: 4px;
+  }
+
+  .profile-header {
+    grid-template-columns: auto 1fr;
+    gap: 1rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 1.25rem;
+    align-items: flex-start;
+  }
+
+  .profile-avatar {
+    font-size: 2.2rem;
+    min-width: 55px;
+    grid-column: 1;
+    grid-row: 1 / 3;
+  }
+
+  .profile-info {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .profile-display-name {
+    font-size: 1.2rem;
+    margin-bottom: 0.3rem;
+  }
+
+  .profile-email {
+    font-size: 0.8rem;
+  }
+
+  .btn-logout-header {
+    grid-column: 1 / 3;
+    grid-row: 3;
+    padding: 0.5rem 1rem;
+    font-size: 0.8rem;
+    width: 100%;
+    text-align: center;
+    margin-top: 0.5rem;
+  }
+
+  .orders-section h2 {
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .orders-list {
+    gap: 0.4rem;
+  }
+
+  .order-card {
+    padding: 0.65rem;
+  }
+
+  .order-header {
+    margin-bottom: 0.35rem;
+    gap: 0.3rem;
+  }
+
+  .order-id {
+    font-size: 0.75rem;
+  }
+
+  .order-status {
+    font-size: 0.6rem;
+    padding: 0.2rem 0.5rem;
+  }
+
+  .order-details {
+    grid-template-columns: 1fr;
+    gap: 0.3rem;
+    font-size: 0.7rem;
+  }
+
+  .order-total {
+    grid-column: 1 / 2;
+    font-size: 0.85rem;
+  }
+
+  .order-payment {
+    grid-column: 1;
+    text-align: left;
+    font-size: 0.7rem;
+  }
+}
