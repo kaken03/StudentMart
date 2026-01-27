@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { db } from '../services/firebase'
-import { collection, getDocs, query, where, doc, getDoc } from 'firebase/firestore'
+import { collection, getDocs, query, where, doc, getDoc, updateDoc } from 'firebase/firestore'
 import { useAuth } from '../context/AuthContext'
 import '../css/Profile.css'
 
@@ -12,6 +12,10 @@ export function Profile() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [displayName, setDisplayName] = useState('')
+  const [cancellingOrderId, setCancellingOrderId] = useState(null)
+  const [showCancelModal, setShowCancelModal] = useState(false)
+  const [cancelError, setCancelError] = useState('')
+  const [cancelSuccess, setCancelSuccess] = useState('')
 
   useEffect(() => {
     if (!user) {
@@ -82,6 +86,48 @@ export function Profile() {
     })
   }
 
+  const handleCancelClick = (orderId) => {
+    setCancellingOrderId(orderId)
+    setShowCancelModal(true)
+    setCancelError('')
+  }
+
+  const handleConfirmCancel = async () => {
+    if (!cancellingOrderId) return
+
+    try {
+      const orderRef = doc(db, 'orders', cancellingOrderId)
+      await updateDoc(orderRef, {
+        status: 'cancelled',
+      })
+
+      // Update local state
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order.id === cancellingOrderId ? { ...order, status: 'cancelled' } : order,
+        ),
+      )
+
+      setCancelSuccess('Order cancelled successfully')
+      setShowCancelModal(false)
+      setCancellingOrderId(null)
+
+      // Clear success message after 3 seconds
+      setTimeout(() => {
+        setCancelSuccess('')
+      }, 3000)
+    } catch (err) {
+      console.error('Error cancelling order:', err)
+      setCancelError('Failed to cancel order. Please try again.')
+    }
+  }
+
+  const handleCloseCancelModal = () => {
+    setShowCancelModal(false)
+    setCancellingOrderId(null)
+    setCancelError('')
+  }
+
   return (
     <div className="profile-page">
       <div className="profile-container">
@@ -96,6 +142,9 @@ export function Profile() {
             Logout
           </button>
         </div>
+
+        {/* Success Message */}
+        {cancelSuccess && <div className="success-message">{cancelSuccess}</div>}
 
         {/* Orders Section - Only for non-admin users */}
         {userRole !== 'admin' && (
@@ -122,11 +171,21 @@ export function Profile() {
                     <div className="order-details">
                       <p className="order-date">{formatDate(order.createdAt)}</p>
                       <p className="order-items">Items: {order.items?.length || 0}</p>
-                      <p className="order-total">Total: ₱{order.total?.toFixed(2) || '0.00'}</p>
+                      <p className="order-total">Total: ₱{order.totalAmount?.toFixed(2) || '0.00'}</p>
                       {order.paymentMethod && (
                         <p className="order-payment">Payment: {order.paymentMethod}</p>
                       )}
                     </div>
+                    {order.status === 'pending' && (
+                      <div className="order-actions">
+                        <button
+                          className="btn-cancel-order1"
+                          onClick={() => handleCancelClick(order.id)}
+                        >
+                          Cancel Order
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -146,6 +205,36 @@ export function Profile() {
           </div>
         )}
       </div>
+
+      {/* Cancel Order Confirmation Modal */}
+      {showCancelModal && (
+        <div className="modal-overlay" onClick={handleCloseCancelModal}>
+          <div className="modal-content cancel-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>Cancel Order?</h3>
+              <button className="modal-close" onClick={handleCloseCancelModal}>
+                ✕
+              </button>
+            </div>
+
+            <div className="modal-body">
+              <p>Are you sure you want to cancel this order?</p>
+              <p className="warning-text">This action cannot be undone. Your order will be marked as cancelled.</p>
+
+              {cancelError && <div className="error-message">{cancelError}</div>}
+
+              <div className="modal-actions">
+                <button className="btn btn-secondary" onClick={handleCloseCancelModal}>
+                  Keep Order
+                </button>
+                <button className="btn btn-danger" onClick={handleConfirmCancel}>
+                  Yes, Cancel Order
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }

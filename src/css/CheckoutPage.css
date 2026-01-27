@@ -4,6 +4,233 @@
   padding: 30px 20px;
 }
 
+/* Price Warning Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.price-warning-modal {
+  max-width: 600px;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--text-light);
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
+}
+
+.modal-close:hover {
+  color: var(--text-color);
+}
+
+.price-warning-content {
+  padding: 20px;
+}
+
+.price-warning-content > p {
+  font-size: 14px;
+  color: var(--text-color);
+  margin: 0 0 20px 0;
+  line-height: 1.5;
+}
+
+.price-changes-list {
+  background-color: #fafafa;
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-left: 3px solid #ff9800;
+}
+
+.price-change-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.price-change-item:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.price-change-info {
+  flex: 1;
+}
+
+.price-change-info .product-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0 0 4px 0;
+}
+
+.price-change-info .price-change-details {
+  font-size: 12px;
+  color: var(--text-light);
+  margin: 0;
+}
+
+.price-change-amount {
+  text-align: right;
+  margin-left: 20px;
+}
+
+.price-change-amount .old-subtotal {
+  font-size: 12px;
+  color: var(--text-light);
+  margin: 0;
+  text-decoration: line-through;
+}
+
+.price-change-amount .new-subtotal {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 4px 0 0 0;
+}
+
+.price-increase {
+  color: #d32f2f;
+}
+
+.price-decrease {
+  color: #388e3c;
+}
+
+.price-warning-summary {
+  background-color: #f0f8ff;
+  border: 1px solid var(--primary-color);
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 20px;
+}
+
+.price-warning-summary .summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: var(--text-color);
+}
+
+.price-warning-summary .summary-row:last-child {
+  margin-bottom: 0;
+}
+
+.price-warning-summary .old-price {
+  color: var(--text-light);
+  text-decoration: line-through;
+}
+
+.price-warning-summary .new-price {
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.price-warning-summary .difference {
+  border-top: 1px solid var(--border-color);
+  padding-top: 8px;
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+.warning-message {
+  font-size: 13px;
+  color: #d32f2f;
+  background-color: #ffebee;
+  padding: 12px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.modal-actions .btn {
+  flex: 1;
+  padding: 12px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.modal-actions .btn-primary {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.modal-actions .btn-primary:hover {
+  background-color: #0056b3;
+}
+
+.modal-actions .btn-secondary {
+  background-color: #e0e0e0;
+  color: var(--text-color);
+}
+
+.modal-actions .btn-secondary:hover {
+  background-color: #d0d0d0;
+}
+
+.loading-message {
+  background-color: #e3f2fd;
+  border: 1px solid var(--primary-color);
+  border-radius: 4px;
+  padding: 15px;
+  text-align: center;
+  color: var(--primary-color);
+  margin-bottom: 20px;
+  font-weight: 500;
+}
+
 .checkout-container {
   max-width: 1200px;
   margin: 0 auto;

@@ -186,14 +186,25 @@
   background-color: #f8d7da;
   color: #842029;
 }
-
 .order-details {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.5rem;
   font-size: 0.8rem;
 }
-
+.btn-cancel-order1 {
+  flex: 1;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  height: 50px;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
 .order-date,
 .order-items,
 .order-total,
@@ -314,7 +325,6 @@
 .admin-message .btn {
   margin-top: 0.5rem;
 }
-
 /* Profile Actions - Removed (logout button now in header) */
 
 /* Tablet Responsiveness */
@@ -473,4 +483,174 @@
     text-align: left;
     font-size: 0.7rem;
   }
+
+  .order-actions {
+    margin-top: 0.5rem;
+  }
+
+  .btn-cancel-order {
+    width: 100%;
+    font-size: 0.75rem;
+    padding: 0.4rem 0.8rem;
+  }
+}
+
+/* Order Actions */
+.order-actions {
+  display: flex;
+  gap: 0.75rem;
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid #f0f0f0;
+}
+
+.btn-cancel-order {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.btn-cancel-order:hover {
+  background-color: #d32f2f;
+  box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+}
+
+.btn-cancel-order:active {
+  transform: scale(0.98);
+}
+
+/* Success Message */
+.success-message {
+  background-color: #e8f5e9;
+  border-left: 3px solid #4caf50;
+  color: #2e7d32;
+  padding: 1rem;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+  font-weight: 500;
+}
+
+/* Cancel Modal */
+.cancel-modal {
+  max-width: 450px;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
+  width: 90%;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-color);
+  margin: 0;
+}
+
+.modal-close {
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: var(--text-light);
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.3s ease;
+}
+
+.modal-close:hover {
+  color: var(--text-color);
+}
+
+.modal-body {
+  padding: 1.5rem;
+}
+
+.modal-body > p {
+  font-size: 0.95rem;
+  color: var(--text-color);
+  margin: 0 0 0.75rem 0;
+  line-height: 1.5;
+}
+
+.warning-text {
+  color: #d32f2f;
+  background-color: #ffebee;
+  padding: 0.75rem;
+  border-radius: 4px;
+  margin-bottom: 1rem !important;
+  font-size: 0.9rem;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.modal-actions .btn {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-family: inherit;
+}
+
+.modal-actions .btn-secondary {
+  background-color: #e0e0e0;
+  color: var(--text-color);
+}
+
+.modal-actions .btn-secondary:hover {
+  background-color: #d0d0d0;
+}
+
+.modal-actions .btn-danger {
+  background-color: #f44336;
+  color: white;
+}
+
+.modal-actions .btn-danger:hover {
+  background-color: #d32f2f;
+  box-shadow: 0 4px 12px rgba(244, 67, 54, 0.3);
 }

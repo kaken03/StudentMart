@@ -523,7 +523,7 @@
   box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
 }
 
-.cancel-btn1 {
+.cancel-btn {
   background-color: #dc3545;
   color: white;
 }
@@ -531,6 +531,7 @@
 .cancel-btn:hover {
   background-color: #c82333;
   transform: translateY(-2px);
+  color: black;
   box-shadow: 0 2px 8px rgba(220, 53, 69, 0.3);
 }
 

@@ -531,7 +531,7 @@ export function AdminOrdersDashboard() {
 
                     {order.status !== 'completed' && order.status !== 'cancelled' && (
                       <button
-                        className="action-btn cancel-btn"
+                        className="action-btn cancel-btn1"
                         onClick={() => {
                           if (window.confirm('Are you sure you want to cancel this order?')) {
                             updateOrderStatus(order.id, 'cancelled')

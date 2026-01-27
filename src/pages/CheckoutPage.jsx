@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { db } from '../services/firebase'
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
+import { collection, addDoc, serverTimestamp, getDocs, query, where } from 'firebase/firestore'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 import '../css/CheckoutPage.css'
 
 export function CheckoutPage() {
   const navigate = useNavigate()
-  const { cart, getTotalPrice, clearCart } = useCart()
+  const { cart, getTotalPrice, clearCart, updateQuantity, updateItemPrice } = useCart()
   const { user, userRole } = useAuth()
   const [loading, setLoading] = useState(false)
+  const [priceChanges, setPriceChanges] = useState([])
+  const [showPriceWarning, setShowPriceWarning] = useState(false)
+  const [checkingPrices, setCheckingPrices] = useState(true)
 
   // Silently redirect admin users away from checkout page
   useEffect(() => {
@@ -18,15 +21,88 @@ export function CheckoutPage() {
       navigate('/', { replace: true })
     }
   }, [user, userRole, navigate])
+
+  // Check for price changes when checkout page loads
+  useEffect(() => {
+    const checkPriceChanges = async () => {
+      if (cart.length === 0) {
+        setCheckingPrices(false)
+        return
+      }
+
+      try {
+        const changes = []
+
+        for (const item of cart) {
+          const productsRef = collection(db, 'products')
+          const q = query(productsRef, where('__name__', '==', item.id))
+          const snapshot = await getDocs(productsRef)
+          
+          // Find product by id
+          let currentProduct = null
+          for (const doc of snapshot.docs) {
+            if (doc.id === item.id) {
+              currentProduct = { id: doc.id, ...doc.data() }
+              break
+            }
+          }
+
+          if (currentProduct && currentProduct.price !== item.price) {
+            changes.push({
+              productId: item.id,
+              productName: item.name,
+              oldPrice: item.price,
+              newPrice: currentProduct.price,
+              quantity: item.quantity,
+              oldSubtotal: item.price * item.quantity,
+              newSubtotal: currentProduct.price * item.quantity,
+            })
+          }
+        }
+
+        if (changes.length > 0) {
+          setPriceChanges(changes)
+          setShowPriceWarning(true)
+        }
+      } catch (err) {
+        console.error('Error checking price changes:', err)
+      } finally {
+        setCheckingPrices(false)
+      }
+    }
+
+    if (cart.length > 0) {
+      checkPriceChanges()
+    }
+  }, [cart])
+
   const [orderPlaced, setOrderPlaced] = useState(false)
   const [orderId, setOrderId] = useState(null)
   const [error, setError] = useState('')
-
   const [formData, setFormData] = useState({
     address: 'Campus Pickup',
     pickupLocation: 'main-campus',
     notes: '',
   })
+
+  // Calculate price differences
+  const totalOldPrice = priceChanges.reduce((sum, change) => sum + change.oldSubtotal, 0)
+  const totalNewPrice = priceChanges.reduce((sum, change) => sum + change.newSubtotal, 0)
+  const priceDifference = totalNewPrice - totalOldPrice
+
+  const handleAcceptPriceChange = () => {
+    // Update cart items with new prices
+    priceChanges.forEach((change) => {
+      updateItemPrice(change.productId, change.newPrice)
+    })
+    // Reset price changes state to reflect new prices
+    setPriceChanges([])
+    setShowPriceWarning(false)
+  }
+
+  const handleRejectPriceChange = () => {
+    navigate('/cart')
+  }
 
   if (!user) {
     return (
@@ -150,8 +226,96 @@ export function CheckoutPage() {
   const totalPrice = getTotalPrice()
 
   return (
-    <div className="checkout-page">
-      <div className="checkout-container">
+    <>
+      {/* Price Change Warning Modal */}
+      {showPriceWarning && priceChanges.length > 0 && (
+        <div className="modal-overlay" onClick={handleRejectPriceChange}>
+          <div className="modal-content price-warning-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h3>⚠️ Price Change Alert</h3>
+              <button
+                className="modal-close"
+                onClick={handleRejectPriceChange}
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="price-warning-content">
+              <p>We've detected price changes in your cart since you added these items. Here's what changed:</p>
+
+              <div className="price-changes-list">
+                {priceChanges.map((change) => (
+                  <div key={change.productId} className="price-change-item">
+                    <div className="price-change-info">
+                      <p className="product-name">{change.productName}</p>
+                      <p className="price-change-details">
+                        Qty: {change.quantity} | Old: ₱{change.oldPrice.toFixed(2)} → New: ₱{change.newPrice.toFixed(2)}
+                      </p>
+                    </div>
+                    <div className="price-change-amount">
+                      <p className="old-subtotal">₱{change.oldSubtotal.toFixed(2)}</p>
+                      <p className={`new-subtotal ${change.newPrice > change.oldPrice ? 'price-increase' : 'price-decrease'}`}>
+                        ₱{change.newSubtotal.toFixed(2)}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="price-warning-summary">
+                <div className="summary-row">
+                  <span>Original Total:</span>
+                  <span className="old-price">₱{(getTotalPrice() - priceDifference).toFixed(2)}</span>
+                </div>
+                <div className="summary-row">
+                  <span>New Total:</span>
+                  <span className={`new-price ${priceDifference > 0 ? 'price-increase' : 'price-decrease'}`}>
+                    ₱{getTotalPrice().toFixed(2)}
+                  </span>
+                </div>
+                {priceDifference !== 0 && (
+                  <div className="summary-row difference">
+                    <span>Difference:</span>
+                    <span className={priceDifference > 0 ? 'price-increase' : 'price-decrease'}>
+                      {priceDifference > 0 ? '+' : ''}₱{priceDifference.toFixed(2)}
+                    </span>
+                  </div>
+                )}
+              </div>
+
+              <p className="warning-message">
+                You will be charged based on the <strong>current prices</strong> shown above. Would you like to proceed or go back to review your cart?
+              </p>
+
+              <div className="modal-actions">
+                <button
+                  className="btn btn-secondary"
+                  onClick={handleRejectPriceChange}
+                >
+                  Back to Cart
+                </button>
+                <button
+                  className="btn btn-primary"
+                  onClick={handleAcceptPriceChange}
+                >
+                  Proceed with Checkout
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      <div className="checkout-page">
+        <div className="checkout-container">
+          {checkingPrices && cart.length > 0 && (
+            <div className="loading-message">
+              <p>Verifying product prices...</p>
+            </div>
+          )}
+
+          {!checkingPrices && showPriceWarning && priceChanges.length > 0 ? null : (
         <div className="checkout-wrapper">
           {/* Checkout Form */}
           <div className="checkout-form-section">
@@ -235,7 +399,9 @@ export function CheckoutPage() {
             </div> */}
           </div>
         </div>
+          )}
+        </div>
       </div>
-    </div>
+    </>
   )
 }
