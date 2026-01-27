@@ -209,7 +209,7 @@ export function ProductModal({ isOpen, category, editingProduct, onClose, onProd
             />
           </div> */}
 
-          <div className="form-group">
+          {/* <div className="form-group">
             <label htmlFor="stock">Stock Quantity</label>
             <input
               type="number"
@@ -219,7 +219,7 @@ export function ProductModal({ isOpen, category, editingProduct, onClose, onProd
               placeholder="Enter stock quantity"
               min="0"
             />
-          </div>
+          </div> */}
 
           <div className="form-group">
             <label htmlFor="image">Product Image {!editingProduct && '*'}</label>
