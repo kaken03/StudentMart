@@ -1,12 +1,46 @@
 :root {
+  /* Primary Colors - Eco-Friendly Palette */
+  --primary-color: #2D5F4F;
+  --primary-dark: #1a3a34;
+  --primary-light: #3d7a68;
+  
+  /* Secondary Colors */
+  --accent-teal: #4db8a8;
+  --accent-teal-dark: #3a9b8f;
+  --accent-sage: #dadada;
+  
+  /* Neutral Colors */
+  --bamboo-tan: #D4AF8E;
+  --gold-accent: #D4AF37;
+  --charcoal: #2A2A2A;
+  --warm-gray: #8B8B7F;
+  --cream-white: #FAFAFA;
+  --light-sage: #E8F0E8;
+  
+  /* Functional Colors */
+  --success: #4caf50;
+  --warning: #ff9800;
+  --danger: #f44336;
+  --error: #d32f2f;
+  --info: #2196f3;
+  
+  /* Background & Text */
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #2A2A2A;
+  --light-bg: #f5f5f0;
+  --border-color: #e0ddd8;
+  --text-color: #2A2A2A;
+  --text-muted: #8B8B7F;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #ffffff;
+    --foreground: #f0ede8;
+    --light-bg: #ececec;
+    --border-color: #d6d6d6;
+    --text-color: #000000;
+    --text-muted: #a8a8a0;
   }
 }
 
@@ -37,6 +71,6 @@ a {
 
 @media (prefers-color-scheme: dark) {
   html {
-    color-scheme: dark;
+    color-scheme: white;
   }
 }

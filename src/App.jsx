@@ -1,64 +1,100 @@
 import React from 'react'
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom'
 import { AuthProvider } from './context/AuthContext'
 import { CartProvider } from './context/CartContext'
 import { Header } from './components/Header'
 import { ProtectedRoute } from './components/ProtectedRoute'
-import { LoginPage } from './pages/LoginPage'
-import { RegisterPage } from './pages/RegisterPage'
-import { HomePage } from './pages/HomePage'
+import { useAuth } from './context/AuthContext'
+import { Home } from './pages/Home'
+import { ProductPage } from './pages/ProductPage'
 import { CartPage } from './pages/CartPage'
 import { CheckoutPage } from './pages/CheckoutPage'
 import { AdminOrdersDashboard } from './pages/AdminOrdersDashboard'
+import { Orders } from './pages/Orders'
+import { Messaging } from './pages/Messaging'
 import { Profile } from './pages/Profile'
+import './app/globals.css'
 import './css/App.css'
+
+function AppContent() {
+  const location = useLocation()
+  const { user } = useAuth()
+  const isHomePage = location.pathname === '/'
+  const showHeader = !isHomePage && user
+
+  // Redirect logged-in users away from home page
+  if (isHomePage && user) {
+    return <Navigate to="/shop" replace />
+  }
+
+  return (
+    <>
+      {showHeader && <Header />}
+      <main className={isHomePage ? 'main-content landing' : 'main-content'}>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/login" element={<Navigate to="/" />} />
+          <Route path="/signup" element={<Navigate to="/" />} />
+          <Route path="/shop" element={<ProductPage />} />
+          <Route path="/products" element={<Navigate to="/shop" />} />
+          <Route path="/cart" element={<CartPage />} />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <Profile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/orders"
+            element={
+              <ProtectedRoute>
+                <Orders />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/messages"
+            element={
+              <ProtectedRoute>
+                <Messaging />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/checkout"
+            element={
+              <ProtectedRoute>
+                <CheckoutPage />
+              </ProtectedRoute>
+            }
+          />
+          
+          {/* Admin Orders Dashboard */}
+          <Route
+            path="/admin-dashboard"
+            element={
+              <ProtectedRoute requiredRole="admin">
+                <AdminOrdersDashboard />
+              </ProtectedRoute>
+            }
+          />
+          
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </main>
+    </>
+  )
+}
 
 function App() {
   return (
     <Router>
       <AuthProvider>
         <CartProvider>
-          <Header />
-          <main className="main-content">
-            <Routes>
-              <Route path="/login" element={<LoginPage />} />
-              <Route path="/register" element={<RegisterPage />} />
-              <Route path="/" element={<HomePage />} />
-              <Route path="/cart" element={<CartPage />} />
-              <Route
-                path="/profile"
-                element={
-                  <ProtectedRoute>
-                    <Profile />
-                  </ProtectedRoute>
-                }
-              />
-              <Route
-                path="/checkout"
-                element={
-                  <ProtectedRoute>
-                    <CheckoutPage />
-                  </ProtectedRoute>
-                }
-              />
-              
-              {/* Admin Orders Dashboard */}
-              <Route
-                path="/admin-dashboard"
-                element={
-                  <ProtectedRoute requiredRole="admin">
-                    <AdminOrdersDashboard />
-                  </ProtectedRoute>
-                }
-              />
-              
-              {/* Protected routes will be added here */}
-              {/* Student routes: /orders */}
-              {/* Seller routes: /seller-dashboard */}
-              
-              <Route path="*" element={<Navigate to="/" />} />
-            </Routes>
-          </main>
+          <AppContent />
         </CartProvider>
       </AuthProvider>
     </Router>

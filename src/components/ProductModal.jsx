@@ -6,10 +6,9 @@ import '../css/ProductModal.css'
 
 // Category mapping
 const CATEGORY_MAP = {
-  'writing': 'Writing',
-  'uniform': 'Uniform',
-  'accessories': 'Accessories',
-  'handbook': 'Handbook',
+  'chair': 'Chair',
+  'table': 'Table',
+  'sofa': 'Sofa',
 }
 
 export function ProductModal({ isOpen, category, editingProduct, onClose, onProductAdded }) {
@@ -68,7 +67,7 @@ export function ProductModal({ isOpen, category, editingProduct, onClose, onProd
     setUploadingImage(true)
     const formData = new FormData()
     formData.append('file', imageFile)
-    formData.append('upload_preset', 'studentmart')
+    formData.append('upload_preset', 'GreenNest')
 
     try {
       const response = await fetch('https://api.cloudinary.com/v1_1/db3trhp0a/image/upload', {
@@ -162,8 +161,8 @@ export function ProductModal({ isOpen, category, editingProduct, onClose, onProd
   if (!isOpen) return null
 
   return (
-    <div className="modal-overlay" onClick={onClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+    <div className="modal-overlay1" onClick={onClose}>
+      <div className="modal-content1" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <h2>{editingProduct ? 'Edit Product' : `Add Product to ${CATEGORY_MAP[modalCategory] || 'Category'}`}</h2>
           <button className="modal-close" onClick={onClose}>×</button>
@@ -198,28 +197,31 @@ export function ProductModal({ isOpen, category, editingProduct, onClose, onProd
             />
           </div>
 
-          {/* <div className="form-group">
+          <div className="form-group">
+            <label htmlFor="category">Category *</label>
+            <select
+              id="category"
+              value={modalCategory}
+              onChange={(e) => setModalCategory(e.target.value)}
+              required
+            >
+              <option value="">Select a category</option>
+              <option value="chair">Chair</option>
+              <option value="table">Table</option>
+              <option value="sofa">Sofa</option>
+            </select>
+          </div>
+
+          <div className="form-group">
             <label htmlFor="description">Description</label>
             <textarea
               id="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              placeholder="Enter product description"
+              placeholder="Enter product description (optional)"
               rows="3"
             />
-          </div> */}
-
-          {/* <div className="form-group">
-            <label htmlFor="stock">Stock Quantity</label>
-            <input
-              type="number"
-              id="stock"
-              value={stock}
-              onChange={(e) => setStock(e.target.value)}
-              placeholder="Enter stock quantity"
-              min="0"
-            />
-          </div> */}
+          </div>
 
           <div className="form-group">
             <label htmlFor="image">Product Image {!editingProduct && '*'}</label>

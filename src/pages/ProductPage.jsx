@@ -2,20 +2,19 @@ import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { db } from '../services/firebase'
 import { collection, getDocs, query, where, orderBy, limit } from 'firebase/firestore'
-import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
 import { ProductCard } from '../components/ProductCard'
 import { ProductModal } from '../components/ProductModal'
-import '../css/HomePage.css'
+import '../css/ProductPage.css'
 
 const CATEGORIES = [
-  { id: 'writing', name: 'Writing', icon: '✏️' },
-  { id: 'uniform', name: 'Uniform', icon: '👕' },
-  { id: 'accessories', name: 'Accessories', icon: '🎒' },
-  { id: 'handbook', name: 'Handbook', icon: '📖' },
+  { id: 'all', name: 'All' },
+  { id: 'chair', name: 'Chair' },
+  { id: 'table', name: 'Table' },
+  { id: 'sofa', name: 'Sofa' },
 ]
 
-export function HomePage() {
+export function ProductPage() {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -24,7 +23,6 @@ export function HomePage() {
   const [showProductModal, setShowProductModal] = useState(false)
   const [modalCategory, setModalCategory] = useState(null)
   const [editingProduct, setEditingProduct] = useState(null)
-  const { getTotalItems } = useCart()
   const { user, userRole } = useAuth()
   const navigate = useNavigate()
 
@@ -37,10 +35,9 @@ export function HomePage() {
       setLoading(true)
       let q
 
-      if (selectedCategory) {
+      if (selectedCategory && selectedCategory !== 'all') {
         q = query(collection(db, 'products'), where('category', '==', selectedCategory))
       } else {
-        // Show all products (not just popular)
         q = query(collection(db, 'products'), orderBy('createdAt', 'desc'))
       }
 
@@ -70,92 +67,58 @@ export function HomePage() {
   )
 
   return (
-    <div className="home-page">
-      {/* <section className="hero">
-        <div className="hero-content">
-          <h1>Welcome to StudentMart</h1>
-          <p>Your one-stop shop for student essentials</p>
+    <div className="product-page">
+      {/* Header Section */}
+      <section className="product-header">
+        <div className="product-header-content">
+          <h1>Our Collection</h1>
+          <p>Discover our premium bamboo furniture collection</p>
         </div>
-      </section> */}
+      </section>
 
-      
-
-      {/* Categories Section */}
-      <section className="categories-section">
-        <div className="section-header">
-          <h2>Explore by Category</h2>
-          {user && userRole !== 'admin' && (
-            <button 
-              className="cart-icon-btn"
-              onClick={() => navigate('/cart')}
-              title="View Cart"
-            >
-              🛒 <span className="cart-count">{getTotalItems()}</span>
-            </button>
-          )}
-        </div>
-        <div className="categories-grid">
-          {CATEGORIES.map((category) => (
-            <div key={category.id} className="category-item">
+      {/* Filter Section */}
+      <section className="product-filter-section">
+        <div className="filter-container">
+          {/* Categories */}
+          <div className="categories-wrapper">
+            {CATEGORIES.map((category) => (
               <button
-                className={`category-card ${selectedCategory === category.id ? 'active' : ''}`}
-                onClick={() => setSelectedCategory(selectedCategory === category.id ? null : category.id)}
+                key={category.id}
+                className={`category-btn ${selectedCategory === category.id ? 'active' : ''}`}
+                onClick={() => setSelectedCategory(category.id)}
               >
-                <div className="category-icon">{category.icon}</div>
-                <div className="category-name">{category.name}</div>
+                {category.name}
               </button>
-              {userRole === 'admin' && (
-                <button
-                  className="add-product-btn"
-                  onClick={() => {
-                    setModalCategory(category.id)
-                    setEditingProduct(null)
-                    setShowProductModal(true)
-                  }}
-                  title="Add product to this category"
-                >
-                  +
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
-      </section>
-          {/* Search Bar */}
-      <section className="search-section">
-        <input
-          type="text"
-          placeholder="Search products..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="search-input"
-        />
-      </section>
-      {/* Products Section */}
-      <section className="products-section">
-        <div className="section-header">
-          <h2>{selectedCategory ? `${CATEGORIES.find(c => c.id === selectedCategory)?.name} Products` : 'All Products'}</h2>
-          {selectedCategory && (
-            <a href="#" className="see-all-link" onClick={(e) => {
-              e.preventDefault()
-              setSelectedCategory(null)
-            }}>
-              See all
-            </a>
-          )}
-        </div>
+            ))}
+          </div>
 
+          {/* Search Bar */}
+          <div className="search-wrapper">
+            <input
+              type="text"
+              placeholder="Search products..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="search-input-modern"
+            />
+          </div>
+
+        </div>
+      </section>
+
+      {/* Products Section */}
+      <section className="products-section-modern">
         {loading && <div className="loading">Loading products...</div>}
         {error && <div className="error-message">{error}</div>}
 
         {!loading && filteredProducts.length === 0 && (
           <div className="empty-state">
-            <p>No products found. Check back soon!</p>
+            <p>No products found.</p>
           </div>
         )}
 
         {!loading && filteredProducts.length > 0 && (
-          <div className="products-grid">
+          <div className="products-grid-modern">
             {filteredProducts.map((product) => (
               <ProductCard
                 key={product.id}
@@ -172,7 +135,7 @@ export function HomePage() {
           </div>
         )}
       </section>
-        
+
       {/* Product Modal */}
       <ProductModal
         isOpen={showProductModal}

@@ -7,7 +7,7 @@ export function CartProvider({ children }) {
 
   // Load cart from localStorage on mount
   useEffect(() => {
-    const savedCart = localStorage.getItem('studentmart_cart')
+    const savedCart = localStorage.getItem('greennest_cart')
     if (savedCart) {
       try {
         setCart(JSON.parse(savedCart))
@@ -19,7 +19,7 @@ export function CartProvider({ children }) {
 
   // Save cart to localStorage whenever it changes
   useEffect(() => {
-    localStorage.setItem('studentmart_cart', JSON.stringify(cart))
+    localStorage.setItem('greennest_cart', JSON.stringify(cart))
   }, [cart])
 
   const addToCart = (product) => {
@@ -67,6 +67,10 @@ export function CartProvider({ children }) {
     return cart.reduce((total, item) => total + item.quantity, 0)
   }
 
+  const getCartItemCount = () => {
+    return cart.length
+  }
+
   const value = {
     cart,
     addToCart,
@@ -76,6 +80,7 @@ export function CartProvider({ children }) {
     clearCart,
     getTotalPrice,
     getTotalItems,
+    getCartItemCount,
   }
 
   return <CartContext.Provider value={value}>{children}</CartContext.Provider>

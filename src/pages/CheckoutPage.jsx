@@ -4,6 +4,7 @@ import { db } from '../services/firebase'
 import { collection, addDoc, serverTimestamp, getDocs, query, where } from 'firebase/firestore'
 import { useCart } from '../context/CartContext'
 import { useAuth } from '../context/AuthContext'
+import { Toast } from '../components/Toast'
 import '../css/CheckoutPage.css'
 
 export function CheckoutPage() {
@@ -14,6 +15,8 @@ export function CheckoutPage() {
   const [priceChanges, setPriceChanges] = useState([])
   const [showPriceWarning, setShowPriceWarning] = useState(false)
   const [checkingPrices, setCheckingPrices] = useState(true)
+  const [toastMessage, setToastMessage] = useState('')
+  const [toastType, setToastType] = useState('success')
 
   // Silently redirect admin users away from checkout page
   useEffect(() => {
@@ -76,8 +79,6 @@ export function CheckoutPage() {
     }
   }, [cart])
 
-  const [orderPlaced, setOrderPlaced] = useState(false)
-  const [orderId, setOrderId] = useState(null)
   const [error, setError] = useState('')
   const [formData, setFormData] = useState({
     address: 'Campus Pickup',
@@ -119,7 +120,7 @@ export function CheckoutPage() {
     )
   }
 
-  if (cart.length === 0 && !orderPlaced) {
+  if (cart.length === 0) {
     return (
       <div className="checkout-page">
         <div className="checkout-container">
@@ -134,34 +135,6 @@ export function CheckoutPage() {
     )
   }
 
-  if (orderPlaced) {
-    return (
-      <div className="checkout-page">
-        <div className="checkout-container">
-          <div className="order-confirmation">
-            <div className="confirmation-icon">✓</div>
-            <h2>Order Placed Successfully!</h2>
-            <p>Thank you for your order</p>
-            <div className="order-id-box">
-              <p className="order-id-label">Order ID:</p>
-              <p className="order-id-text">{orderId}</p>
-            </div>
-            {/* <div className="order-details">
-              <p><strong>Payment Method:</strong> Cash on Pickup</p>
-              <p><strong>Total Amount:</strong> ₱{getTotalPrice().toFixed(2)}</p>
-              <p><strong>Status:</strong> Pending</p>
-            </div> */}
-            <div className="confirmation-message">
-              <p>Your order has been placed and is being prepared. Please prepare the exact cash amount for pickup.</p>
-            </div>
-            <button onClick={() => navigate('/')} className="back-home-btn">
-              Back to Home
-            </button>
-          </div>
-        </div>
-      </div>
-    )
-  }
 
   const handleInputChange = (e) => {
     const { name, value } = e.target
@@ -212,9 +185,12 @@ export function CheckoutPage() {
       // Clear cart
       clearCart()
 
-      // Show confirmation
-      setOrderId(docRef.id)
-      setOrderPlaced(true)
+      // Show toast notification
+      setToastMessage('✓ Order placed successfully!')
+      setToastType('success')
+
+      // Redirect to orders page immediately while loading overlay is showing
+      navigate('/orders')
     } catch (err) {
       console.error('Error placing order:', err)
       setError('Failed to place order. Please try again.')
@@ -227,6 +203,27 @@ export function CheckoutPage() {
 
   return (
     <>
+      {/* Toast Notification */}
+      {toastMessage && (
+        <Toast
+          message={toastMessage}
+          type={toastType}
+          duration={3000}
+          onClose={() => setToastMessage('')}
+        />
+      )}
+
+      {/* Loading Overlay */}
+      {loading && (
+        <div className="loading-overlay">
+          <div className="loading-content">
+            <div className="loading-spinner-large"></div>
+            <h2>Processing Your Order</h2>
+            <p>Please wait while we secure your order...</p>
+          </div>
+        </div>
+      )}
+
       {/* Price Change Warning Modal */}
       {showPriceWarning && priceChanges.length > 0 && (
         <div className="modal-overlay" onClick={handleRejectPriceChange}>
@@ -316,89 +313,93 @@ export function CheckoutPage() {
           )}
 
           {!checkingPrices && showPriceWarning && priceChanges.length > 0 ? null : (
-        <div className="checkout-wrapper">
-          {/* Checkout Form */}
-          <div className="checkout-form-section">
-            <h1>Checkout</h1>
-
-            {error && <div className="error-message">{error}</div>}
-
-            <form onSubmit={handlePlaceOrder}>
-              {/* Payment Method */}
-              <fieldset className="form-section">
-                <h4>Payment Method</h4>
-                <div className="payment-method">
-                  <div className="payment-option selected">
-                    <input type="radio" name="payment" value="cash" checked readOnly />
-                    <div className="payment-info">
-                      <p className="payment-name">💵 Cash on Pickup</p>
-                      <p className="payment-description">Pay the exact amount when you pick up your order</p>
-                    </div>
-                  </div>
-                </div>
-              </fieldset>
-
-              {/* Action Buttons */}
-              <div className="form-actions">
+            <div className="checkout-wrapper">
+              {/* Order Summary Section - Top on Mobile */}
+              <div className="order-summary-section">
                 <button
                   type="button"
-                  className="cancel-btn"
+                  className="back-to-cart-btn"
                   onClick={() => navigate('/cart')}
                   disabled={loading}
                 >
-                  Back to Cart
+                  ← Back to Cart
                 </button>
-                <button type="submit" className="place-order-btn" disabled={loading}>
-                  {loading ? 'Placing Order...' : 'Place Order'}
-                </button>
-              </div>
-            </form>
-          </div>
 
-          {/* Order Summary */}
-          <div className="order-summary-section">
-            <h2>Order Summary</h2>
+                <h2>Order Summary</h2>
 
-            <div className="summary-items">
-              {cart.map((item) => (
-                <div key={item.id} className="summary-item">
-                  <div className="item-image">
-                    <img src={item.imageUrl || item.image} alt={item.name} />
-                  </div>
-                  <div className="item-details">
-                    <p className="item-name">{item.name}</p>
-                    <p className="item-qty">Qty: {item.quantity}</p>
-                  </div>
-                  <p className="item-subtotal">₱{(item.price * item.quantity).toFixed(2)}</p>
+                <div className="summary-items">
+                  {cart.map((item) => (
+                    <div key={item.id} className="summary-item">
+                      <div className="item-image">
+                        <img src={item.imageUrl || item.image} alt={item.name} />
+                      </div>
+                      <div className="item-details">
+                        <p className="item-name">{item.name}</p>
+                        <p className="item-qty">Qty: {item.quantity}</p>
+                        <p className="item-price">₱{(item.price * item.quantity).toFixed(2)}</p>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
 
-            <div className="summary-totals">
-              {/* <div className="total-row">
-                <span>Subtotal:</span>
-                <span>₱{totalPrice.toFixed(2)}</span>
-              </div> */}
-              {/* <div className="total-row">
-                <span>Shipping:</span>
-                <span>₱0.00</span>
+                <div className="summary-divider"></div>
+
+                <div className="summary-totals">
+                  <div className="total-row">
+                    <span>Subtotal:</span>
+                    <span>₱{totalPrice.toFixed(2)}</span>
+                  </div>
+                  <div className="total-row">
+                    <span>Shipping:</span>
+                    <span>Free</span>
+                  </div>
+                  <div className="total-row final">
+                    <span>Total:</span>
+                    <span>₱{totalPrice.toFixed(2)}</span>
+                  </div>
+                </div>
               </div>
-              <div className="total-row">
-                <span>Tax:</span>
-                <span>₱0.00</span>
-              </div> */}
-              <div className="total-row final">
-                <span>Total:</span>
-                <span>₱{totalPrice.toFixed(2)}</span>
+
+              {/* Checkout Form Section */}
+              <div className="checkout-form-section">
+                <h1>Complete Your Order</h1>
+
+                {error && <div className="error-message">{error}</div>}
+
+                <form onSubmit={handlePlaceOrder}>
+                  {/* Payment Method */}
+                  <div className="form-section1">
+                    <h3>Payment Method</h3>
+                    <div className="payment-option selected">
+                      <input type="radio" name="payment" value="cash" checked readOnly />
+                      <div className="payment-info">
+                        <p className="payment-name">💵 Cash on Pickup</p>
+                        <p className="payment-description">Pay when you pick up your order at campus</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Order Button */}
+                  <button 
+                    type="submit" 
+                    className="place-order-btn" 
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <>
+                        <span className="spinner"></span>
+                        <span>Processing...</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Place Order</span>
+                        <span className="btn-amount">₱{totalPrice.toFixed(2)}</span>
+                      </>
+                    )}
+                  </button>
+                </form>
               </div>
             </div>
-
-            {/* <div className="payment-method-summary">
-              <p className="summary-label">Payment Method</p>
-              <p className="summary-value">💵 Cash on Pickup</p>
-            </div> */}
-          </div>
-        </div>
           )}
         </div>
       </div>

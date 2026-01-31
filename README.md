@@ -1,4 +1,4 @@
-# StudentMart - Student-Focused Ordering System
+# GreenNest - Eco-Friendly Ordering System
 
 A modern web application where students can browse products, add them to a cart, and place orders. Features role-based access for students, sellers, and admins.
 
@@ -21,7 +21,8 @@ src/
 │   └── ProtectedRoute.jsx  # Route protection wrapper
 ├── pages/
 │   ├── LoginPage.jsx       # User login
-│   ├── RegisterPage.jsx    # User registration
+│   ├── SignupPage.jsx      # User registration
+│   ├── LandingPage.jsx     # Landing page with hero section
 │   └── HomePage.jsx        # Product listing
 ├── context/
 │   ├── AuthContext.jsx     # Authentication state & methods

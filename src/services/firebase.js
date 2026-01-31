@@ -3,13 +3,13 @@ import { getAuth } from 'firebase/auth'
 import { getFirestore } from 'firebase/firestore'
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBIrTGDk84DC9FLXXBsm3qD88pey7cGNNw",
-  authDomain: "studentmart-web.firebaseapp.com",
-  projectId: "studentmart-web",
-  storageBucket: "studentmart-web.firebasestorage.app",
-  messagingSenderId: "1032686035225",
-  appId: "1:1032686035225:web:071256d68b91fe0a56e588"
-}
+  apiKey: "AIzaSyB-FspOJriVdJjIHVADtrPgQO4IjUirLPM",
+  authDomain: "greennest-eco.firebaseapp.com",
+  projectId: "greennest-eco",
+  storageBucket: "greennest-eco.firebasestorage.app",
+  messagingSenderId: "793338899659",
+  appId: "1:793338899659:web:a0bb658ca6fcfc7a02bf4e"
+};
 
 const app = initializeApp(firebaseConfig)
 export const auth = getAuth(app)

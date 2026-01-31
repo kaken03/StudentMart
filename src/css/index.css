@@ -5,15 +5,8 @@
 }
 
 :root {
-  --primary-color: #007bff;
-  --primary-hover: #0056b3;
-  --secondary-color: #6c757d;
-  --success-color: #28a745;
-  --danger-color: #dc3545;
-  --light-bg: #f8f9fa;
-  --border-color: #dee2e6;
-  --text-color: #333;
-  --text-light: #666;
+  /* These are now defined in globals.css */
+  /* Use CSS variables from globals for consistency */
 }
 
 body {
@@ -21,8 +14,8 @@ body {
     'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: var(--light-bg);
-  color: var(--text-color);
+  background-color: var(--background);
+  color: var(--foreground);
 }
 
 html,
@@ -48,21 +41,21 @@ body,
 }
 
 .btn-primary:hover {
-  background-color: var(--primary-hover);
+  background-color: var(--primary-light);
 }
 
 .btn-primary:disabled {
-  background-color: var(--secondary-color);
+  background-color: var(--accent-sage);
   cursor: not-allowed;
 }
 
 .btn-secondary {
-  background-color: var(--secondary-color);
+  background-color: var(--accent-sage);
   color: white;
 }
 
 .btn-secondary:hover {
-  background-color: #5a6268;
+  background-color: #8899aa;
 }
 
 .btn-full {
@@ -73,23 +66,23 @@ body,
   text-align: center;
   padding: 40px 20px;
   font-size: 16px;
-  color: var(--text-light);
+  color: var(--text-muted);
 }
 
 .error-message {
-  background-color: #f8d7da;
-  color: #721c24;
+  background-color: #fff5f5;
+  color: var(--error);
   padding: 12px 20px;
   border-radius: 4px;
   margin-bottom: 20px;
-  border: 1px solid #f5c6cb;
+  border: 1px solid #ffebee;
 }
 
 .success-message {
-  background-color: #d4edda;
-  color: #155724;
+  background-color: #e8f5e9;
+  color: #1b5e20;
   padding: 12px 20px;
   border-radius: 4px;
   margin-bottom: 20px;
-  border: 1px solid #c3e6cb;
+  border: 1px solid #c8e6c9;
 }
